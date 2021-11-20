@@ -2,8 +2,8 @@ import React, {Component} from "react";
 import { connect } from "react-redux";
 import { fetchData } from "../actions/fetchData";
 
-let trendingFeedUrl = "https://tiktok33.p.rapidapi.com/user/feed/dave.xp";
-let trendingFeedUrlOptions =  {
+const trendingFeedUrl = "https://tiktok33.p.rapidapi.com/trending/feed";
+const trendingFeedUrlOptions =  {
 	"method": "GET",
 	"headers": {
 		"x-rapidapi-host": "tiktok33.p.rapidapi.com",
@@ -19,12 +19,23 @@ class App extends Component{
     }    
 
     componentDidMount () {
-        this.props.fetchData(trendingFeedUrl, trendingFeedUrlOptions);
+        this.props.fetchFeed(trendingFeedUrl, trendingFeedUrlOptions);
     }
 
     render() {
         return (
            <div>
+               {this.props.fetchData.map((feed, index) => {
+                   return <div key={index}>
+                       <div> name: {feed.authorMeta.name} aka {feed.authorMeta.nickName} </div>
+                       <div> text:  {feed.text} </div>
+                       <video width="288" height="512" controls="controls">
+                            <source src={feed.videoUrl}/>
+                       </video>
+                       <div> comments count: {feed.commentCount} </div>
+                       <br/>
+                   </div>
+               }) }
           </div>
         );
     }
@@ -38,7 +49,7 @@ const mapStateToProps = state => {
 
 const mapToDispatchToProps = dispatch => {
     return {
-        fetchData: (url, options) => dispatch(fetchData(url, options))
+        fetchFeed: (url, options) => dispatch(fetchData(url, options))
     };
 };
 
